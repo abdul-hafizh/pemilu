@@ -67,7 +67,7 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
                         <div class="text-center mb-5">
-                            <h3 class="mb-3 fw-semibold">Selamat Datang <span class="text-danger">ADMIN</span></h3>
+                            <h3 class="mb-3 fw-semibold">Menu <span class="text-danger">Daftar Kandidat</span></h3>
                             <p class="text-muted mb-4 ff-secondary">To achieve this, it would be necessary to have uniform grammar,
                                 pronunciation and more common words. If several languages coalesce the grammar. 
                                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illo minima eius vel nihil ex in corrupti velit dicta 
@@ -81,27 +81,39 @@
                     <div class="col-lg-6 col-sm-12">
                         <div class="card card-height-100">
                             <div class="card-header align-items-center d-flex">
-                                <h4 class="card-title mb-0 flex-grow-1">Top List Kandidat</h4>                                
+                                <h4 class="card-title mb-0 flex-grow-1">List Kandidat</h4>      
                             </div><!-- end card header -->
-
+                            
                             <div class="card-body">
-                                <div class="table-responsive table-card">
+                                <form action="submit_kandidat.php" method="post">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <input class="form-control form-control-sm" type="text" name="nama_lengkap" placeholder="Nama Lengkap Kandidat" required>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-lg-4">
+                                            <input class="form-control form-control-sm" type="number" min="1" name="nomor_urut" placeholder="Nomor Urut" required>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-lg-4">
+                                            <input type="submit" class="btn btn-sm btn-primary" value="Simpan">
+                                        </div>
+                                        <!--end col-->
+                                    </div>                                     
+                                </form>                     
+                                <div class="table-responsive table-card mt-3">
                                     <table class="table table-centered table-hover align-middle table-nowrap mb-0">
                                         <tbody>
                                             <tr>
                                                 <th>No</th>
                                                 <th>Nama Kandidat</th>
                                                 <th>Nomor Urut</th>
-                                                <th>Jumlah</th>
-                                                <th>Persent (%)</th>
+                                                <th>Aksi</th>
                                             </tr>
                                             <?php      
-                                                require_once("config.php");        
-                                                
-                                                $select = $db->prepare('SELECT id FROM users');
-                                                $select->execute();                                                
+                                                require_once("config.php");                                                        
 
-                                                $sql = "SELECT *, jml / " . $select->rowCount() . " * 100 as persent FROM vw_pooling_result ORDER BY jml DESC";
+                                                $sql = "SELECT * FROM kandidat ORDER BY id";
                                                 $row = $db->prepare($sql);
                                                 $row->execute();
                                                 $hasil = $row->fetchAll();
@@ -120,16 +132,7 @@
                                                     <?php echo $v["nomor_urut"]; ?>
                                                 </td>
                                                 <td>
-                                                    <?php echo number_format($v["jml"]); ?>
-                                                </td>
-                                                <td>
-                                                    <?php if($v["persent"] > 50) { ?>
-                                                        <h5 class="fs-14 mb-0"><?php echo number_format((float)$v["persent"], 2, '.', ''); ?>% <i class="ri-bar-chart-fill text-success fs-16 align-middle ms-2"></i></h5>
-
-                                                    <?php } else { ?>
-                                                            <h5 class="fs-14 mb-0"><?php echo number_format((float)$v["persent"], 2, '.', ''); ?>% <i class="ri-bar-chart-fill text-danger fs-16 align-middle ms-2"></i></h5>
-
-                                                    <?php } ?>
+                                                    <a href="delete_kandidat.php?id=<?php echo $v["id"]; ?> " class="btn btn-sm btn-danger">Hapus</a>
                                                 </td>
                                             </tr>
 

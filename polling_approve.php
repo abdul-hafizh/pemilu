@@ -74,39 +74,71 @@
                             <p class="text-muted mb-4 ff-secondary">Anda harus memilih 13 kandidat.</p>
                         </div>
                     </div>
-                </div>
-                <form action="submit.php" method="post" id="target">
+                </div>                
+                <form action="submit_approve.php" method="post" id="target">
                     <input type="hidden" name="user_id" value="<?php echo $_SESSION["user"];?>">
                     <input type="hidden" name="have_count" value="<?php echo $_SESSION["have_count"];?>">
                     <div class="row">
-                            <?php                                
-                                $sql = "SELECT id, nama_lengkap, nomor_urut FROM kandidat ORDER BY id";
-                                $row = $db->prepare($sql);
-                                $row->execute();
-                                $hasil = $row->fetchAll();
+                        <div class="col-lg-3 col-sm-12"></div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="card card-height-500">
+                                <div class="card-header align-items-center d-flex">
+                                    <h4 class="card-title mb-0 flex-grow-1">Kandidat Yang Anda Pilih</h4>                                    
+                                </div><!-- end card header -->
 
-                                foreach($hasil as $v){
-                            ?>
-                            <div class="col-lg-2 col-sm-6">
-                                <div class="card">
-                                    <div class="form-check form-check-danger">
-                                        <input class="form-check-input" type="checkbox" name="kandidat_check[]" value="<?php echo $v['id'];?>" id="<?php echo $v['nomor_urut'];?>" onclick="theFunc()">
-                                    </div>                                                                    
-                                    <div class="card-body text-center p-0">
-                                        <h4><?php echo $v['nomor_urut'];?></h4>
-                                        <h5 class="mb-1"><?php echo $v['nama_lengkap'];?></h5> 
+                                <div class="card-body p-0">
+                                    <div class="align-items-center p-3 justify-content-between d-flex">
+                                        <div class="flex-shrink-0">
+                                            <div class="text-muted">total <span class="fw-semibold"><?php echo $select->rowCount(); ?></span> kandidat</div>                                            
+                                        </div>
+                                    </div><!-- end card header -->
+
+                                    <div data-simplebar style="max-height: 657px;">
+                                        <ul class="list-group list-group-flush border-dashed px-3">
+                                            <?php                                
+                                                $sql = "SELECT *
+                                                        FROM result_polling rp
+                                                        LEFT JOIN kandidat kdt ON rp.kandidat_id = kdt.id
+                                                        WHERE user_id = ?
+                                                        ORDER BY kdt.id";
+                                                $row = $db->prepare($sql);
+                                                $row->execute([$_SESSION["user"]]);
+                                                $hasil = $row->fetchAll();
+
+                                                foreach($hasil as $v){
+                                            ?>
+
+                                            <li class="list-group-item">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="form-check ps-0 flex-sharink-0">
+                                                        <input type="checkbox" class="form-check-input ms-0" checked disabled>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <label class="form-check-label mb-0 ps-2"><?php echo $v['nama_lengkap'] . ' (' . $v['nomor_urut'] . ')';?></label>
+                                                    </div>
+                                                    <div class="flex-shrink-0 ms-2">
+                                                        <p class="text-muted fs-13 mb-0"><?php echo $v['created_date'];?></p>
+                                                    </div>
+                                                </div>
+                                            </li>
+
+                                            <?php } ?>
+                                            
+                                        </ul><!-- end ul -->
                                     </div>
-                                </div>
-                                <!-- end card -->
-                            </div>
-                            <!-- end col -->
-                        <?php } ?>                   
-                    </div>
-                    <!-- end row -->
+                                    <div class="p-3">
+                                        &nbsp;
+                                    </div>
+                                </div><!-- end card body -->
+                            </div><!-- end card -->
+                        </div><!-- end col -->
+                        <div class="col-lg-3 col-sm-12"></div>
+                    </div> <!-- end row-->
                     
                     <div class="row">
                         <div class="col-12 text-center mt-5">
-                            <button type="button" class="btn btn-primary"  onclick="theSubmit()"> <i class="ri-send-plane-fill"></i> Submit <span id="pilihan"></span></button>                            
+                            <a href="polling.php" class="btn btn-danger"><i class="ri-logout-box-r-line"></i> Kembali</a>
+                            <button type="button" class="btn btn-primary" onclick="theSubmit()"> <i class="ri-send-plane-fill"></i> Submit <span id="pilihan"></span></button>                            
                         </div>
                     </div>
                     <!-- end row -->
